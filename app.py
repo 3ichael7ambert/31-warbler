@@ -216,7 +216,26 @@ def profile():
     """Update profile for current user."""
 
     # IMPLEMENT THIS
+    """Update profile for current user."""
 
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    form = UserProfileForm(obj=g.user)
+
+    if form.validate_on_submit():
+        g.user.username = form.username.data
+        g.user.email = form.email.data
+        g.user.location = form.location.data
+        g.user.bio = form.bio.data
+        g.user.header_image_url = form.header_image_url.data
+
+        db.session.commit()
+        flash("Profile updated.", "success")
+        return redirect(f"/users/{g.user.id}")
+
+    return render_template('users/profile.html', form=form)
 
 @app.route('/users/delete', methods=["POST"])
 def delete_user():

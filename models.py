@@ -57,50 +57,58 @@ class User(db.Model):
     id = db.Column(
         db.Integer,
         primary_key=True,
+        autoincrement=True,
     )
 
     email = db.Column(
-        db.Text,
+        db.String(50),
         nullable=False,
         unique=True,
     )
 
     username = db.Column(
-        db.Text,
+        db.String(20),
         nullable=False,
         unique=True,
     )
 
     image_url = db.Column(
-        db.Text,
+        db.String,
+        nullable=False,
         default="/static/images/default-pic.png",
     )
 
     header_image_url = db.Column(
-        db.Text,
+        db.String,
+        nullable=True,
         default="/static/images/warbler-hero.jpg"
     )
 
     bio = db.Column(
-        db.Text,
+        db.String(160),
+        nullable=True,
     )
 
     location = db.Column(
-        db.Text,
+        db.String(30),
+        nullable=True,
     )
 
     password = db.Column(
-        db.Text,
+        db.String,
         nullable=False,
     )
 
-    messages = db.relationship('Message')
+    messages = db.relationship(
+        "Message", order_by="desc(Message.timestamp)", backref="user"
+    )
 
     followers = db.relationship(
         "User",
-        secondary="follows",
-        primaryjoin=(Follows.user_being_followed_id == id),
-        secondaryjoin=(Follows.user_following_id == id)
+        secondary="followers",
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.following_id == id),
+        backref=db.backref("following", lazy="dynamic"),
     )
 
     following = db.relationship(
