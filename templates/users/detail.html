@@ -63,6 +63,16 @@
   </div>
 
   {% block user_details %}
+
+  <h2>{{ user.username }}</h2>
+  <p>Email: {{ user.email }}</p>
+  <p>Bio: {{ user.bio }}</p>
+
+  {% if g.user and g.user.id == user.id %}
+    <p><a href="/users/profile/edit">Edit Profile</a></p>
+  {% endif %}
+
+
   {% endblock %}
 
 </div>

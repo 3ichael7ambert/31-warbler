@@ -37,6 +37,21 @@
 
       {% endfor %}
 
+
+
+
+      <h2>Followers</h2>
+      {% for user in user.followers %}
+        <div class="card mt-4">
+          <div class="card-body">
+            <h5 class="card-title">{{ user.username }}</h5>
+            <p class="card-text">{{ user.bio }}</p>
+          </div>
+        </div>
+      {% endfor %}
+
+
+      
     </div>
   </div>
 
