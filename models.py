@@ -9,6 +9,9 @@ bcrypt = Bcrypt()
 db = SQLAlchemy()
 
 
+
+
+
 class Follows(db.Model):
     """Connection of a follower <-> followed_user."""
 
@@ -103,19 +106,20 @@ class User(db.Model):
         "Message", order_by="desc(Message.timestamp)", backref="user"
     )
 
-    followers = db.relationship(
-        "User",
-        secondary="followers",
-        primaryjoin=(followers.c.follower_id == id),
-        secondaryjoin=(followers.c.following_id == id),
-        backref=db.backref("following", lazy="dynamic"),
+    followers = db.Table(
+        'followers',
+        db.Column('follower_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+        db.Column('followed_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
     )
+
 
     following = db.relationship(
         "User",
-        secondary="follows",
-        primaryjoin=(Follows.user_following_id == id),
-        secondaryjoin=(Follows.user_being_followed_id == id)
+        secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref("followers", lazy="dynamic"),
+        lazy="dynamic"
     )
 
     likes = db.relationship(
