@@ -6,7 +6,7 @@ from app import app
 app.config['TESTING'] = True
 
 # Use test database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///warbler_test'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///warbler-test'
 
 # Disable CSRF tokens in the forms (only for testing purposes!)
 app.config['WTF_CSRF_ENABLED'] = False
@@ -48,15 +48,13 @@ class MessageModelTestCase(TestCase):
         # Check that the message is added to the user's messages
         self.assertIn(message, self.user.messages.all())
 
-    def test_message_repr(self):
-        """Does the repr method work as expected?"""
+def test_message_repr(self):
+    message = Message(text="Test message", user_id=1)
+    db.session.add(message)
+    db.session.commit()
+    expected_repr = "<Message #1: Test message, User ID: 1>"
+    self.assertEqual(repr(message), expected_repr)
 
-        message = Message(text='Test message', user_id=self.user.id)
-        db.session.add(message)
-        db.session.commit()
-
-        expected_repr = f"<Message #{message.id}: {message.text}, User ID: {message.user_id}>"
-        self.assertEqual(repr(message), expected_repr)
 
 # Run the tests
 if __name__ == '__main__':

@@ -6,7 +6,7 @@ from app import app
 app.config['TESTING'] = True
 
 # Use test database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///warbler_test'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///warbler-test'
 
 # Disable CSRF tokens in the forms (only for testing purposes!)
 app.config['WTF_CSRF_ENABLED'] = False

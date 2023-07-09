@@ -29,13 +29,22 @@ python seed.py
 flask run
 ```
 
-## Notes to devlopers
+## Notes to developers
 
 ```bash
 pip freeze > requirements.txt
 ```
 
 ### testing
+
+```bash
+psql
+```
+
+```sql
+CREATE DATABASE warbler_test;
+CREATE DATABASE "warbler-test";
+```
 
 ```bash
 FLASK_ENV=testing python -m unittest test_message_model.py
