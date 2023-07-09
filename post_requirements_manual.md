@@ -1,9 +1,9 @@
 ```bash
+pip install appnope==0.1.0
 pip install backcall==0.1.0
 pip install bcrypt==3.1.4
-pip install appnope==0.1.0
 pip install blinker==1.4
-pip install cffi==1.14.2
+pip install cffi==1.15.1
 pip install Click==7.0
 pip install decorator==4.3.0
 pip install Faker==0.9.1
@@ -32,6 +32,7 @@ pip install six==1.11.0
 pip install SQLAlchemy==1.2.12
 pip install text-unidecode==1.2
 pip install traitlets==4.3.2
+pip install typing_extensions==4.6.3
 pip install wcwidth==0.1.7
 pip install Werkzeug==0.14.1
 pip install WTForms==2.2.1
