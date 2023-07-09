@@ -34,4 +34,5 @@ class UserProfileForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
     location = StringField("Location")
     bio = TextAreaField("Bio")
+    image_url = StringField('(Optional) Image URL')
     header_image_url = StringField("Header Image URL")

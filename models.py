@@ -103,8 +103,13 @@ class User(db.Model):
     )
 
     messages = db.relationship(
-        "Message", order_by="desc(Message.timestamp)", backref="user"
+        "Message", 
+        order_by="desc(Message.timestamp)", 
+        backref=db.backref("user_messages", lazy="joined", cascade='all, delete'),
+        lazy="dynamic"
     )
+
+
 
     followers = db.Table(
         'followers',
@@ -209,7 +214,10 @@ class Message(db.Model):
         nullable=False,
     )
 
-    user = db.relationship('User')
+    user = db.relationship('User', backref=db.backref('message_user'))
+
+
+
 
 
 def connect_db(app):
@@ -220,3 +228,4 @@ def connect_db(app):
 
     db.app = app
     db.init_app(app)
+

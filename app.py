@@ -3,8 +3,9 @@ import os
 from flask import Flask, render_template, request, flash, redirect, session, g,flash
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import joinedload
 
-from forms import UserAddForm, LoginForm, MessageForm
+from forms import UserAddForm, LoginForm, MessageForm, UserProfileForm
 from models import db, connect_db, User, Message
 
 CURR_USER_KEY = "curr_user"
@@ -18,12 +19,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
-
+db.create_all() 
 
 ##############################################################################
 # User signup/login/logout
@@ -148,15 +149,12 @@ def users_show(user_id):
 
     user = User.query.get_or_404(user_id)
 
-    # snagging messages in order from the database;
-    # user.messages won't be in order by default
-    messages = (Message
-                .query
-                .filter(Message.user_id == user_id)
-                .order_by(Message.timestamp.desc())
-                .limit(100)
-                .all())
+    # Fetch the messages and convert them to a list
+    messages = Message.query.filter(Message.user_id == user_id).order_by(Message.timestamp.desc()).limit(100).all()
+
     return render_template('users/show.html', user=user, messages=messages)
+
+
 
 
 @app.route('/users/<int:user_id>/following')
@@ -231,8 +229,11 @@ def profile():
         g.user.email = form.email.data
         g.user.location = form.location.data
         g.user.bio = form.bio.data
+        g.user.image_url = form.image_url.data
         g.user.header_image_url = form.header_image_url.data
 
+        # avatar = request.files['avatar']
+        
         db.session.commit()
         flash("Profile updated.", "success")
         return redirect(f"/users/{g.user.id}")
@@ -247,12 +248,19 @@ def delete_user():
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
-    do_logout()
+    # Get the user and their messages with a joined load
+    user = User.query.options(joinedload(User.messages)).get(g.user.id)
 
-    db.session.delete(g.user)
+    # Delete the messages associated with the user
+    for message in user.messages:
+        db.session.delete(message)
+
+    # Delete the user
+    db.session.delete(user)
     db.session.commit()
 
-    return redirect("/signup")
+    # Redirect to the homepage
+    return redirect("/")
 
 
 ##############################################################################
@@ -352,6 +360,28 @@ def add_header(req):
 
 
 
+@app.route('/users/add_like/<int:message_id>', methods=['POST'])
+def add_like(message_id):
+    """Add a like for the specified message."""
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    message = Message.query.get_or_404(message_id)
+
+    if message.user == g.user:
+        flash("Cannot like your own message.", "danger")
+    elif message in g.user.likes:
+        flash("Message already liked.", "danger")
+    else:
+        g.user.likes.append(message)
+        db.session.commit()
+        flash("Message liked.", "success")
+
+    # Redirect back to the referring page
+    return redirect(request.referrer)
+
 
 
 
@@ -390,3 +420,6 @@ def test_route():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+    

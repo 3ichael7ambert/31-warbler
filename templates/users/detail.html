@@ -2,7 +2,9 @@
 
 {% block content %}
 
-<div id="warbler-hero" class="full-width"></div>
+<div id="warbler-hero" class="full-width">
+  <img src="{{ user.header_image_url }}" alt="Header Image" id="warbler-hero" class="full-width">
+</div>
 <img src="{{ user.image_url }}" alt="Image for {{ user.username }}" id="profile-avatar">
 <div class="row full-width">
   <div class="container">
@@ -12,19 +14,19 @@
           <li class="stat">
             <p class="small">Messages</p>
             <h4>
-              <a href="/users/{{ user.id }}">{{ user.messages | length }}</a>
+              <a href="/users/{{ user.id }}">{{ user.messages.count() }}</a>
             </h4>
           </li>
           <li class="stat">
             <p class="small">Following</p>
             <h4>
-              <a href="/users/{{ user.id }}/following">{{ user.following | length }}</a>
+              <a href="/users/{{ user.id }}/following">{{ user.following.count() }}</a>
             </h4>
           </li>
           <li class="stat">
             <p class="small">Followers</p>
             <h4>
-              <a href="/users/{{ user.id }}/followers">{{ user.followers | length }}</a>
+              <a href="/users/{{ user.id }}/followers">{{ user.followers.count() }}</a>
             </h4>
           </li>
           <li class="stat">
@@ -58,9 +60,10 @@
 <div class="row">
   <div class="col-sm-3">
     <h4 id="sidebar-username">@{{ user.username }}</h4>
-    <p>BIO HERE</p>
-    <p class="user-location"><span class="fa fa-map-marker"></span>LOCATION HERE</p>
+    <p>Bio: {{ user.bio }}</p>
+    <p class="user-location"><span class="fa fa-map-marker"></span>Location: {{ user.location }}</p>
   </div>
+  
 
   {% block user_details %}
 
