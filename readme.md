@@ -47,6 +47,7 @@ CREATE DATABASE "warbler-test";
 ```
 
 ```bash
+source venv/bin/activate
 FLASK_ENV=testing python -m unittest test_message_model.py
 FLASK_ENV=testing python -m unittest test_message_views.py
 FLASK_ENV=testing python -m unittest test_user_model.py
