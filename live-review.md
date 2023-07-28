@@ -1,18 +1,16 @@
 # Notes for edits from starter code
 
 ## app.py
-line 6 
+
+line 6
 logout changed
 
-
 ## forms.py
-
 
 ## models.py
 
 beginning around line 50 I changes Text to string
 changed messages
-
 
 ## test_message_model.py and test_user_view.py
 
@@ -37,7 +35,3 @@ lines 39+
 
 line 39
 line 43+
-
-
-
-
